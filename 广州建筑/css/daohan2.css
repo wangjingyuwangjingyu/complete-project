@@ -1,0 +1,59 @@
+.v1{
+	font-size:20px;
+	color: #333;
+	font-weight: bold;
+	float: left;
+	margin-top: 30px;
+	margin-left: 200px;
+}
+.nkl1,.nkl2{
+	height: 1100px;
+}
+.nkl9{
+	height: 1000px;
+}
+#m1{
+	width: 666px;
+	float: left;
+	margin-top: 20px;
+}
+.nkl12 a{
+	float: left;
+	display: block;
+	color: #333;
+	font-size: 12px;
+	margin-top: 5px;
+}
+#m2{
+	width: 600px;
+	height: 1px;
+	float: left;
+}
+#m3{
+	float: left;
+}
+.nkl1 .nkl2 .nkl3 #m4{
+	height: 300px;
+}
+#m5{
+	font-size: 12px;
+	color: #333;
+}
+#nkl7{
+	background-image: url();
+}
+
+
+
+
+
+#fh{
+	width: 30px;
+	height: 31px;
+	position: fixed;
+	left: 80%;
+	bottom: 200px;
+	z-index: 111111;
+	cursor: pointer;
+	display: none;
+}

@@ -1,0 +1,65 @@
+.nkhy56{
+	background-image: url();
+	font-size: 12px;
+	color: #333;
+}
+.nkl6{
+	height: 200px;
+}
+.nkl1,.nkl2{
+	height: 1300px;
+}
+.nkl9{
+	height: 1150px;
+}
+.be1h1{
+	height: 163px;
+	border-bottom: 1px dotted #ccc;
+}
+.be1h2{
+	width: 162px;
+	height: 112px;
+	border: 1px dotted #ccc;
+	float: left;
+	margin-top: 10px;
+}
+.be1h2 img{
+	width: 157px;
+	height: 103px;
+	float: left;
+	display: block;
+	margin-top: 3px;
+	margin-left: 3px;
+}
+.be1h3 span{
+	cursor: pointer;
+}
+.be1h3{
+	width: 437px;
+	height: 110px;
+	margin-left: 20px;
+	float: left;
+	margin-top: 10px;
+}
+.be1h3 p{
+	font-size: 12px;
+	line-height: 18px;
+}
+.be1h3 span{
+	font-size: 18px;
+	line-height: 18px;
+	color: #00A5E6;
+}
+
+
+
+#fh{
+	width: 30px;
+	height: 31px;
+	position: fixed;
+	left: 80%;
+	bottom: 200px;
+	z-index: 111111;
+	cursor: pointer;
+	display: none;
+}

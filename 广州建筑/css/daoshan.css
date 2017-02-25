@@ -1,0 +1,121 @@
+.nkl1{
+	width: 1439px;
+	height: 678px;
+	margin: 0 auto;
+	background-image: url(../img/web_conBom.jpg);
+	background-repeat: no-repeat;
+	background-position: 0px 94px;
+}
+.nkl2{
+	width: 1439px;
+	height: 678px;
+	background-repeat: no-repeat;
+	background-image: url(../img/web_conTop.jpg);
+	background-position: 0px -95px;
+}
+.nkl3{
+	width: 216px;
+	height: 200px;
+	float: left;
+	margin-top: 70px;
+	margin-left: 229px;
+	margin-right: 20px;
+}
+.nkl4{
+	width: 740px;
+	height: 500px;
+	float: left;
+	margin-top: 70px;
+}
+.nkl5{
+	width: 191px;
+	height: 24px;
+	font-size: 25px;
+	font-weight: bold;
+	color: #1983D5;
+	padding-left: 25px;
+	float: left;
+}
+.nkl6{
+	width: 216px;
+	height: 68px;
+	background-color: #fff;
+	float: left;
+	margin-top: 22px;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 5px #ccc;
+}
+.nkl7{
+	width: 178px;
+	height: 27px;
+	background-image: url(../img/conmenuOn.gif);
+	float: left;
+	margin-top: 15px;
+	margin-left: 17px;
+	font-size: 14px;
+	color: #fff;
+	line-height: 27px;
+	cursor:pointer;
+	border-bottom: 1px dotted #ccc;
+}
+.nkl7 li{
+	margin-left: 20px;
+	list-style: disc;
+}
+.nkl8{
+	width: 740px;
+	height: 45px;
+}
+.nkl9{
+	width: 740px;
+	height: 500px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 5px #ccc;
+}
+.nkl10{
+	width: 300px;
+	height: 12px;
+	float: right;
+	margin-top: 12px;
+	text-align: right;
+}
+.nkl11{
+	width: 672px;
+	height: 54px;
+	margin: 0px auto;
+	border-bottom: 1px solid #ccc;
+	font-size: 20px;
+	color: #1983D5;
+	line-height:54px;
+}
+.nkl12{
+	width: 672px;
+	height: 100px;
+	margin: 26px auto;
+	line-height: 30px;
+	color: #444;
+	font-size: 12px;
+}
+.nkl10 a{
+	font-size: 12px;
+	color: #333;
+}
+.nkl10 span span{
+	font-size: 12px;
+	color: #00A5E6;
+}
+
+
+
+
+#fh{
+	width: 30px;
+	height: 31px;
+	position: fixed;
+	left: 80%;
+	bottom: 200px;
+	z-index: 111111;
+	cursor: pointer;
+	display: none;
+}

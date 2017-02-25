@@ -1,0 +1,40 @@
+#mkn1{
+	width: 666px;
+	height: 30px;
+	margin: 0 auto;
+	font-size: 20px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 20px;
+	display: block;
+}
+.nkl1,.nkl2{
+	height: 1300px;
+}
+.nkl9{
+	height: 1200px;
+}
+.nkl12 p{
+	font-size: 12px;
+	color: #333;
+}
+.nkl6{
+	height: 400px;
+}
+.knpy1{
+	background-image: url();
+	font-size: 12px;
+	color: #333;
+}
+
+
+#fh{
+	width: 30px;
+	height: 31px;
+	position: fixed;
+	left: 80%;
+	bottom: 200px;
+	z-index: 111111;
+	cursor: pointer;
+	display: none;
+}

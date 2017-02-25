@@ -1,0 +1,29 @@
+#bj11{
+	height: 770px;
+}
+.nkl1,.nkl2{
+	height: 900px;
+}
+
+
+#fh{
+	width: 30px;
+	height: 31px;
+	position: fixed;
+	left: 80%;
+	bottom: 200px;
+	z-index: 111111;
+	cursor: pointer;
+	display: none;
+}
+.bye1{
+	cursor: pointer;
+}
+.nub11{
+	cursor: pointer;
+}
+.nkl12 div ul li:hover{
+	background-color:#F9C24E;
+	color: #fff;
+	cursor: pointer;
+}

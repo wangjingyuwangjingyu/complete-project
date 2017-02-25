@@ -1,0 +1,84 @@
+.nkl9{
+	height: 1400px;
+}
+.nkl1,.nkl2{
+	height: 1500px;
+}
+#m1,#m2,#m3{
+	font-size: 12px;
+	color: #333;
+	background-image: url();
+}
+.nkl6{
+	height: 200px;
+}
+.buy1{
+	width: 666px;
+	height: 100px;
+	border-bottom: 1px dotted #ccc;
+}
+.buy1:hover{
+	background-color: #04B0F2;
+	cursor: pointer;
+	color: #fff;
+}
+.buy1 li{
+	display: block;
+}
+#m2{
+	float: left;
+	margin-top:30px;
+}
+#m4{
+	width: 150px;
+	height: 20px;
+	color: #333;
+	background-color: #F2F2F2;
+	text-align: center;
+	line-height: 20px;
+	border:1px solid #ccc;
+	float: left;
+	margin-right: 5px;
+	margin-left: 190px;
+	margin-top: 67px;
+}
+.bu1{
+	width: 20px;
+	height: 20px;
+	background-color: #F2F2F2;
+	border: 1px solid #ccc;
+	text-align: center;
+	font-size: 14px;
+	line-height: 20px;
+	float: left;
+	margin-top: 67px;
+	margin-right: 5px;
+	cursor: pointer;
+}
+.bu1:hover{
+	background-color: #888;
+	color: #fff;
+}
+#m7{
+	float: left;
+	margin-top: 67px;
+}
+#m5{
+	width: 30px;
+	height: 25px;
+	float: left;
+	margin-top: 67px;
+}
+
+
+
+#fh{
+	width: 30px;
+	height: 31px;
+	position: fixed;
+	left: 80%;
+	bottom: 200px;
+	z-index: 111111;
+	cursor: pointer;
+	display: none;
+}
