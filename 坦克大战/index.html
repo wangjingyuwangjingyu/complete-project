@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+	<title>Document</title>
+	<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<!-- 游戏战场 -->
+<section>
+<!-- 游戏按键,上，下,左,右 -->
+<div class="yanshi">
+	<div class="left">
+	</div>
+</div>
+<!-- 游戏按键,打击 -->
+<div class="yanshi right1">
+	<div class="right">
+		<div class="fashu">法术</div>
+	</div>
+</div>
+
+<!-- 建筑物 -->
+<div class="q q1">
+	<img src="img/" alt="">
+</div>
+<div class="q q2">
+	<img src="img/" alt="">
+</div>
+<div class="q q3">
+	<img src="img/" alt="">
+</div>
+
+<!-- 我的坦克 -->
+<div class="me">
+	<img src="img/" alt="">
+</div>
+</section>
+
+
+</body>
+</html>
+<script src="js/zepto.min.js"></script>
+<script src="js/rem.js"></script>
+<script src="js/play.js"></script>
+<script>
+// 创建游戏玩
+	var game=new tan();
+	game.play();
+</script>
