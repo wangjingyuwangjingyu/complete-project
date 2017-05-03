@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/>
+	<title>Document</title>
+	<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<!-- 游戏战场 -->
+<section>
+<!-- 游戏按键,上，下,左,右 -->
+<div class="yanshi">
+	<div class="left">
+	</div>
+</div>
+<!-- 游戏按键,打击 -->
+<div class="yanshi right1">
+	<div class="right">
+		<div class="fashu">法术</div>
+	</div>
+</div>
+
+<!-- 建筑物 -->
+<!-- <div class="q q1"></div> -->
+<div class="q q2"></div>
+<!-- <div class="q q3"></div> -->
+
+<!-- 我的坦克 -->
+<div class="me" style=""></div>
+</section>
+<div class="playbox">
+	<img src="img/timg.png" alt="">
+	<button>开始游戏</button>
+</div>
+
+</body>
+</html>
+<script src="js/zepto.min.js"></script>
+<script src="js/rem.js"></script>
+<script src="js/play.js"></script>
+<script>
+// 创建游戏玩
+	var game=new tan();
+	// 开场动画
+	var index=0;
+	var t1=window.setInterval(function(){
+		index++;
+		$('.playbox img').css({'opacity':index%2?0.2:1});
+		if(index%2==0){
+			$('.playbox img').css({'transform':'rotate(30deg)'});
+		}else{
+			$('.playbox img').css({'transform':'rotate(-30deg)'});
+		}
+	},600);
+	$('.playbox button').css({'line-height':'30px'});
+	var t2=window.setInterval(function(){
+		
+	});
+	$('section').css({"display":"none"});
+	$('.playbox button').on('touchstart',function(){
+		$(this).css({'display':'none'});
+		$('section').css({"display":"block"});
+		game.play();
+	});
+
+	
+</script>
