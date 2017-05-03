@@ -6,11 +6,13 @@ function tan(){
 	this.maxw=document.documentElement.clientWidth;
 	this.maxh=document.documentElement.clientHeight;
 	this.qian=[];
+	this.dishu=0;
 }
 // 开始玩游戏
 tan.prototype.play=function(){
 	this.chushihua();
 	this.mezou();
+	this.di();
 }
 tan.prototype.chushihua=function(){
 	var self1=this;
@@ -146,4 +148,56 @@ tan.prototype.mezou=function(){
 			
 		// }
 	},Math.abs(self.mespeed*100));
+}
+// 敌坦克自动创建,自动走
+tan.prototype.di=function(){
+	var self=this;
+	var zou=['left','right','bottom','left','right','top','bottom','right','bottom','bottom']
+	var lc=0;
+	var zc=document.documentElement.clientWidth/2;
+	var rc=document.documentElement.clientWidth-100;
+	var arrnum=[lc,zc,rc]
+	window.setInterval(function(){
+		if(self.dishu<3){
+			var div=document.createElement('div');
+			var r=Math.floor(Math.random()*3);
+			div.style.left=arrnum[r]+"px";
+			div.classList='ditanke';
+			$(div).appendTo('section');
+			self.dishu++;
+		}
+	},3000);
+	window.setInterval(function(){
+		for(var i=0;i<$('.ditanke').length;i++){
+			var r=Math.floor(Math.random()*10);
+			if(zou[r]=='top'){
+				var value=parseInt($($('.ditanke')[i]).css('top'))-10;
+				$($('.ditanke')[i]).css({"top":value+"px",'background-image':'url(img/de4.png)','background-size':'100%','background-repeat':'none'});
+			}else if(zou[r]=='bottom'){
+				var value=parseInt($($('.ditanke')[i]).css('top'))+10;
+				$($('.ditanke')[i]).css({"top":value+"px",'background-image':'url(img/de1.png)','background-size':'100%','background-repeat':'none'});
+			}else if(zou[r]=='left'){
+				var value=parseInt($($('.ditanke')[i]).css('left'))-10;
+				$($('.ditanke')[i]).css({"left":value+"px",'background-image':'url(img/de2.png)','background-size':'100%','background-repeat':'none'});
+			}else if(zou[r]=='right'){
+				var value=parseInt($($('.ditanke')[i]).css('left'))+10;
+				$($('.ditanke')[i]).css({"left":value+"px",'background-image':'url(img/de3.png)','background-size':'100%','background-repeat':'none'});
+			}
+			// 墙壁判断
+			var top=parseInt($($('.ditanke')[i]).css("top"));
+			var left=parseInt($($('.ditanke')[i]).css("left"));
+			if(top<0){
+				$($('.ditanke')[i]).css({"top":0+"px"});
+			}
+			if(top>self.maxh-50){
+				$($('.ditanke')[i]).css({"top":self.maxh-50+"px"});
+			}
+			if(left<0){
+				$($('.ditanke')[i]).css({"left":0+"px"});
+			}
+			if(left>self.maxw-50){
+				$($('.ditanke')[i]).css({"left":self.maxw-50+"px"});
+			}
+		}
+	},300);
 }

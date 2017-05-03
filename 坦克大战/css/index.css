@@ -121,3 +121,12 @@ body{
 	font-weight: both;
 	border-radius: 3px;
 }
+.ditanke{
+	width:1rem;
+	height:1rem;
+	background-image:url(../img/de1.png);
+	position:absolute;
+	z-index:9999999999999;
+	top:0px;
+	background-size:100%;
+}
