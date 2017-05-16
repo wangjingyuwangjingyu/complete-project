@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+		#can{
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			margin: auto;
+		}
+		body{
+			background: #000;
+		}
+		ul{
+			width: 500px;
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			margin: 0px;
+			padding: 0px;
+		}
+		ul li{
+			width: 87px;
+			list-style: none;
+			margin: 0px;
+			padding: 0px;
+			font-size: 24px;
+			cursor: pointer;
+			background-color: #fff;
+			float: left;
+			border-radius: 10px;
+			text-align: center;
+			line-height: 40px;
+			margin-right: 10px;
+		}
+		ul li:hover{
+			background-color: red;
+			color: #fff;
+		}
+		ul li:last-child{
+			margin:0px;
+		}
+	</style>
+</head>
+<body>
+<canvas id="can"></canvas>
+<ul>
+	<li>10个</li>
+	<li>100个</li>
+	<li>2000个</li>
+</ul>
+</body>
+<ml>
+<script type="text/javascript">
+var lis=document.querySelectorAll('li');
+lis[0].onclick=function(){
+	arr.length=10;
+}
+lis[1].onclick=function(){
+	arr.length=100;
+}
+lis[2].onclick=function(){
+	arr.length=2000;
+}
+
+// 球球数量
+var sum=100;
+
+	var can=document.getElementById('can');
+	can.width=1200;
+	can.height=800;
+	// can.style.border="1px solid red";
+	var hb=can.getContext('2d');
+	var colors=[];
+	var bian=[];
+	for(var j=0;j<sum;j++){
+		colors[j]="rgba("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+",0.8)";
+	}
+	var arr=[];
+	for(var i=0;i<sum;i++){
+		var rr=Math.floor(Math.random()*10);
+		arr.push({
+				x:(can.width/2),
+				y:100,
+				r:8,
+				fanx:1,
+				fany:1,
+				color:colors[rr]
+			});
+		var x=Math.floor(Math.random()*10);
+		var y=Math.floor(Math.random()*10);
+		var n=Math.floor(Math.random()*100);
+		bian.push({
+			g:0.1*n,
+			vx:x,
+			vy:y
+		});
+	}
+	// var fany=1,fanx=1;
+	var time1=Math.floor(new Date().getTime()/1000);
+	function fn(){
+		h1(0,0);
+		window.setInterval(function(){
+			hb.clearRect(0,0,can.width,can.height);
+			
+			for(var i=0;i<arr.length;i++){
+				var time2=Math.floor(new Date().getTime()/1000);
+				var t=time2-time1;
+				// 保持恒定速度开关
+				t=1;
+				var sx=(bian[i].vx*t-bian[i].g*t*2/2)*arr[i].fanx;
+				var sy=(bian[i].vy*t-bian[i].g*t*2/2)*arr[i].fany;
+				if(arr[i].y>can.height){
+					arr[i].y=can.height-Math.abs(sy);
+					arr[i].fany*=-1;
+				}
+				if(arr[i].y<0){
+					arr[i].y=Math.abs(sy);
+					arr[i].fany*=-1;
+				}
+				if(arr[i].x>can.width){
+					arr[i].x=can.width-Math.abs(sx);
+					arr[i].fanx*=-1;
+				}
+				if(arr[i].x<0){
+					arr[i].x=Math.abs(sx);
+					arr[i].fanx*=-1;
+				}
+				h1(sx,sy,i);
+			}
+		},0);
+	}
+	function h1(sx,sy,index){
+			sx=sx||0;
+			sy=sy||0;
+			index=index||0;
+			hb.beginPath();
+			hb.arc(arr[index].x+sx,arr[index].y+sy,arr[index].r,0,Math.PI*2);
+			if(arr[index].x%2==0){
+				arr[index].color="rgba("+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+","+Math.floor(Math.random()*255)+",0.1)";
+			}
+			arr[index]={
+				x:arr[index].x+sx,
+				y:arr[index].y+sy,
+				r:arr[index].r,
+				fanx:arr[index].fanx,
+				fany:arr[index].fany,
+				color:arr[index].color
+			};
+			for(var k=0;k<arr.length;k++){
+				var x=Math.pow((Math.abs(arr[index].x-arr[k].x)),2);
+				var y=Math.pow((Math.abs(arr[index].y-arr[k].y)),2);
+				var sum1=Math.sqrt(x+y);
+				if(sum1<150){
+					hb.moveTo(arr[index].x,arr[index].y);
+					hb.lineTo(arr[index].x,arr[index].y);
+					hb.lineTo(arr[k].x,arr[k].y);
+					hb.lineWidth=1;
+					hb.strokeStyle=arr[index].color;
+					hb.stroke();
+					hb.closePath();
+				}
+			};
+			hb.fillStyle=arr[index].color;
+			hb.fill();
+			hb.closePath();
+	}
+	fn();
+</script>
