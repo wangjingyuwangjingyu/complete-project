@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!--css样式-->
+    <style>
+        #box{
+            width: 604px;
+            height: 604px;
+            background: ;
+            box-shadow: 3px 3px #ccc,-3px -3px #ccc;
+            border: 2px solid #000;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            margin: auto;
+        }
+        body{
+            margin: 0px;
+            overflow: hidden;
+        }
+        header,#time{
+            width: 100%;
+            /*position: absolute;*/
+            /*left: 50%;*/
+            text-align: center;
+            font-size: 30px;
+            color: #fff;
+            background: deeppink;
+        }
+        #time{
+            position: absolute;
+            bottom: 0px!important;
+            left: 0px!important;
+            background: cornflowerblue;
+        }
+        #imgbtn{
+            width: 200px;
+            height: 200px;
+            position: fixed;
+            left: 10px;
+            top: 0px;
+            bottom: 0px;
+            margin: auto;
+            cursor: pointer;
+            animation: dh 2s;
+        }
+        #imgbtn:hover{
+            animation: dh 2s;
+        }
+        @keyframes dh {
+            0%{
+                width: 200px;
+                height: 200px;
+            }
+            50%{
+                width: 150px;
+                height: 150px;
+            }
+            100%{
+                width: 220px;
+                height: 220px;
+            }
+        }
+        #imgbtn img{
+            display: block;
+            width: 100%;
+        }
+        #rightbox{
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            margin-top:-25px;
+            font-size: 50px;
+            line-height: -25px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .divs:hover{
+            background: rgba(5,5,5,0.2)!important;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header id="head">扫&nbsp;&nbsp;雷</header>
+<div id="imgbtn">
+    <img src="x.jpg" alt="">
+</div>
+<div id="box"></div>
+<div id="time">倒计时：00:00:00</div>
+<div id="rightbox"></div>
+</body>
+</html>
+<!--js代码-->
+<script type="text/javascript">
+<!--主函数-->
+    function mainfun() {
+        //  变量
+        this.box=28;
+        this.big=document.getElementById("box");
+        this.h=document.documentElement.clientHeight;
+        this.w=document.documentElement.clientWidth;
+        this.headtop=document.getElementById("head");
+        this.bottom=document.getElementById("time");
+        this.imgbtn=document.getElementById("imgbtn");
+        this.array=[];
+        this.ts=0;
+        this.tf=0;
+        this.tx=0;
+        this.djst=2*60*60;
+        this.t;
+        this.playflag=true;
+    }
+    //游戏入口
+    mainfun.prototype.begin=function () {
+        var self=this;
+        self.load();
+    };
+    //    初始化加载
+    mainfun.prototype.load=function () {
+        var self=this;
+        var headh=(self.h-604)/2-5;
+        self.headtop.style.height=headh+"px";
+        self.headtop.style.lineHeight=headh+"px";
+        self.bottom.style.height=headh+"px";
+        self.bottom.style.lineHeight=headh+"px";
+        for(var i=0;i<20;i++){
+            var arr=[];
+            for(var j=0;j<20;j++){
+                var div=document.createElement("div");
+                div.className="divs";
+                div.style.cssText="width:"+self.box+"px;height:"+self.box+"px;float:left;border:1px solid #ccc;background:#ddd;box-shadow:1px 1px #aaa;text-align:center;line-height:"+self.box+"px;";
+                //构建数据结构
+                arr[j]={
+                    div:div,
+                    i:i,
+                    j:j,
+                    data:0,
+                    num:0,
+                    back:"#eee",
+                };
+                self.big.appendChild(div);
+            }
+            self.array[i]=arr;
+        }
+
+    //    倒计时
+        self.t=window.setInterval(function () {
+            self.time();
+        },1000);
+        // 点击开始游戏
+        self.imgbtn.onclick=function(){
+            if(self.playflag){
+                // 动画特效
+                self.playflag=false;
+                var div=document.createElement("div");
+                div.style.cssText="line-height:100px;color:red;text-align:center;font-size:80px;width:500px;height:100px;position:absolute;top:0px;left:0px;right:0px;bottom:0px;margin:auto;";
+                div.innerText="准备";
+                document.documentElement.appendChild(div);
+                window.setTimeout(function(){
+                    document.documentElement.removeChild(div);
+                    var div1=document.createElement("div");
+                    div1.style.cssText="line-height:100px;color:orange;text-align:center;font-size:80px;width:500px;height:100px;position:absolute;top:0px;left:0px;right:0px;bottom:0px;margin:auto;";
+                    div1.innerText="1";
+                    document.documentElement.appendChild(div1);
+                    window.setTimeout(function(){
+                        document.documentElement.removeChild(div1);
+                        var div2=document.createElement("div");
+                        div2.style.cssText="line-height:100px;color:yellow;text-align:center;font-size:80px;width:500px;height:100px;position:absolute;top:0px;left:0px;right:0px;bottom:0px;margin:auto;";
+                        div2.innerText="2";
+                        document.documentElement.appendChild(div2);
+                        window.setTimeout(function(){
+                            document.documentElement.removeChild(div2);
+                            var div3=document.createElement("div");
+                            div3.style.cssText="line-height:100px;color:purple;text-align:center;font-size:80px;width:500px;height:100px;position:absolute;top:0px;left:0px;right:0px;bottom:0px;margin:auto;";
+                            div3.innerText="3";
+                            document.documentElement.appendChild(div3);
+                            window.setTimeout(function(){
+                                document.documentElement.removeChild(div3);
+                                var div4=document.createElement("div");
+                                div4.style.cssText="line-height:100px;color:pink;text-align:center;font-size:50px;width:500px;height:100px;position:absolute;top:0px;left:0px;right:0px;bottom:0px;margin:auto;";
+                                div4.innerText="开始  begin go";
+                                document.documentElement.appendChild(div4);
+                                window.setTimeout(function(){
+                                    document.documentElement.removeChild(div4);
+                                    self.ramdl();
+                                },500);
+                            },800);
+                        },900);
+                    },1000);
+                },1500);
+            }
+        }
+    }
+//    利用扫雷随机地雷
+mainfun.prototype.ramdl=function(){
+        var self=this;
+        //随机安放地雷
+        var num=0;
+        do{
+            num=parseInt(Math.random()*100);
+        }while(num==0||num<30);
+        var d1=document.getElementById("rightbox");
+        d1.innerText=num+"个地雷";
+        for(var i=0;i<num;i++){
+            var x=parseInt(Math.random()*20);
+            var y=parseInt(Math.random()*20);
+            self.array[x][y].data="url(sl.jpg)";
+            self.array[x][y].div.style.backgroundSize="100%";
+        }
+        //扫描所有为空的,进行填空
+        for(var i=0;i<self.array.length;i++){
+            for(var j=0;j<self.array[i].length;j++){
+                var num=0;
+                //扫描每一个元素使用死的规则
+                if(self.array[i][j].data==0){
+                    // 上,下,左,右
+                    if(i<19){
+                        if(self.array[i+1][j].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    if(i>0){
+                        if(self.array[i-1][j].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    if(j>0){
+                        if(self.array[i][j-1].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    if(j<19){
+                        if(self.array[i][j+1].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    // 左上，右上，左下，右下,
+                    if(i>0&&j>0){
+                        if(self.array[i-1][j-1].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    if(i>0&&j<19){
+                        if(self.array[i-1][j+1].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    if(i<19&&j>0){
+                        if(self.array[i+1][j-1].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    if(i<19&&j<19){
+                        if(self.array[i+1][j+1].data=="url(sl.jpg)"){
+                            num++;
+                        }
+                    }
+                    // 1,2,3,4，....雷的样式定义
+                    switch(num){
+                        case 0:self.array[i][j].div.style.color="purple";break;
+                        case 1:self.array[i][j].div.style.color="yellow";break;
+                        case 2:self.array[i][j].div.style.color="blue";break;
+                        case 3:self.array[i][j].div.style.color="red";break;
+                        case 4:self.array[i][j].div.style.color="pink";break;
+                        case 5:self.array[i][j].div.style.color="orange";break;
+                        default:self.array[i][j].div.style.color="#ccc";
+                    }
+                    self.array[i][j].num=num;
+                }
+            }
+        }
+        // 遮罩画布
+        for(var i=0;i<self.array.length;i++){
+            for(var j=0;j<self.array[i].length;j++){
+                self.array[i][j].div.i=i;
+                self.array[i][j].div.j=j;
+                self.array[i][j].div.onclick=function(){
+                    var pd=self.array[this.i][this.j].div.style.background;
+                    console.dir("汪:"+pd);
+                    if(pd!='url("sl.jpg") 0% 0% / 100% rgb(221, 221, 221)'&&pd!="rgb(255, 255, 255)"){
+                            var data=self.array[this.i][this.j].data;
+                            if(data==0){
+                                self.array[this.i][this.j].div.innerText=self.array[this.i][this.j].num;
+                                self.array[this.i][this.j].div.style.background="#fff";
+                                // 随即一个区域
+                                var ramw,ramh;
+                                do{
+                                    ramw=parseInt(Math.random()*7);
+                                    ramh=parseInt(Math.random()*3);
+                                }while(ramh==0&&ramw==0);
+                                for(var i1=this.i-ramw;i1<this.i+ramw;i1++){
+                                    for(var j1=this.j-ramh;j1<this.j+ramh;j1++){
+                                            if(i1>=0&&j1>=0&&i1<=19&&j1<=19){
+                                               // 不扫描有地雷的
+                                                if(self.array[i1][j1].data!="url(sl.jpg)"){
+                                                    self.array[i1][j1].div.innerText=self.array[i1][j1].num;
+                                                    self.array[i1][j1].div.style.background="#fff";
+                                                }
+                                            }
+                                            // 跳过方格的数字
+                                            var m=parseInt(Math.random()*1000+1);
+                                            var tg1=parseInt(Math.random()*5);
+                                            var flag=false;
+                                            for(var p1=2;p1<parseInt(m/2);p1++){
+                                                if(p1/m==0&&m!=p1){
+                                                    flag=true;
+                                                }
+                                            }
+                                            if (flag) {
+                                                j1+=tg1;
+                                            }
+                                    }
+                                    // 跳过方格的数字
+                                            var m=parseInt(Math.random()*1000+1);
+                                            var tg1=parseInt(Math.random()*5);
+                                            var flag=false;
+                                            for(var p1=2;p1<parseInt(m/2);p1++){
+                                                if(p1/m==0&&m!=p1){
+                                                    flag=true;
+                                                }
+                                            }
+                                            if (flag) {
+                                                i1+=tg1;
+                                            }
+                                }
+                            }else{
+                                self.array[this.i][this.j].div.style.backgroundImage=data;
+                                var div5=document.createElement("div");
+                                div5.innerText="你被炸死了";
+                                div5.style.cssText="width:600px;height:200px;background:purple;color:#fff;position:absolute;left:0px;right:0px;top:0px;bottom:0px;margin:auto;border:3px solid red;font-size:100px;text-align:center;line-height:200px;";
+                                document.documentElement.appendChild(div5);
+                                window.clearInterval(self.t);
+
+                            }
+                       }else{
+                                var div5=document.createElement("div");
+                                div5.innerText="已经点击";
+                                div5.style.cssText="width:100px;height:50px;background:#fff;color:#000;position:absolute;left:0px;right:0px;top:0px;bottom:0px;margin:auto;border:1px solid #000;font-size:25px;text-align:center;line-height:50px;";
+                                document.documentElement.appendChild(div5);
+                                window.setTimeout(function(){
+                                    document.documentElement.removeChild(div5);
+                                },500);
+                       }
+                        
+                    }
+                }
+            }
+}
+//倒计时
+mainfun.prototype.time=function () {
+    var self=this;
+    self.djst--;
+    if(self.djst<=0){
+        window.clearInterval(self.t);
+        alert("你输了");
+    }
+    //计算秒
+    self.ts=self.djst%60;
+    if(self.ts<10){
+        self.ts="0"+self.ts;
+    }
+    //计算分
+    self.tf=parseInt(self.djst/60%60);
+    if(self.tf<10){
+        self.tf="0"+self.tf;
+    }
+    //计算时
+    self.tx=parseInt(self.djst/60/60%(24));
+    if(self.tx<10){
+        self.tx="0"+self.tx;
+    }
+    self.bottom.innerText="倒计时："+self.tx+":"+self.tf+":"+self.ts;
+}
+
+
+
+//   创建游戏开始
+    var play=new mainfun();
+    play.begin();
+</script>

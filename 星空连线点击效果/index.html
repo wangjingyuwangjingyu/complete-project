@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+			body,html{
+				margin:0px;
+				width:100%;
+				height:100%;
+			}
+			#can{
+				position:absolute;
+				top:0px;
+				left:0px;
+				bottom:0px;
+				right:0px;
+				margin:auto;
+				background:#000;
+			}
+	</style>
+</head>
+<body>
+		<canvas id="can">
+			你的浏览器,不支持H5.
+		</canvas>
+</body>
+</html>
+<script type="text/javascript">
+		//全局变量
+		function main(){
+				this.substance=document.getElementById("can");
+				this.canvas=this.substance.getContext("2d");
+				this.arcboxs=[];
+				this.clientW=document.documentElement.clientWidth;
+				this.clientH=document.documentElement.clientHeight;
+				this.circle=0;
+				this.x=0;
+				this.y=0;
+				this.index=0;
+				this.arr=[10,20,30,40,50,60];
+				this.colors=['red','blue','yellow','pink','#fff','#121'];
+				this.r=200;
+		}
+		//入口
+		main.prototype.begin=function(){
+				var self=this;
+				self.load();
+				
+		}
+		//初始化加载
+		main.prototype.load=function(){
+				var self=this;
+				//设置画布
+				self.canvas.translate(0,0);
+				self.substance.width=self.clientW;
+				self.substance.height=self.clientH;
+				//初始数据
+				var size=5,n=0;
+				for(var i=0;i<10;i++){
+						for(var j=0;j<10;j++){
+								var randomx=0;
+								var randomy=0;
+								//位置不能为0;
+								do{
+										randomx=parseInt(Math.random()*10-2);
+										randomy=parseInt(Math.random()*10-5);
+								}while(randomx==0||randomy==0);
+								var x=parseInt(Math.random()*self.clientW+size);
+								var y=parseInt(Math.random()*self.clientH+size);
+								self.arcboxs[n]={
+										x:x,	
+										y:y,
+										color:"#fff",
+										boxsize:size,
+										vx:randomx,
+										vy:randomy,
+								};
+								n++;
+						}
+				}
+				//调用渲染
+				window.setInterval(function(){
+						self.drawing();
+				},100);
+				//鼠标事件
+				self.substance.onmousemove=function(e){
+						self.x=e.offsetX;
+						self.y=e.offsetY;
+						//鼠标点击事件
+						var r=5;
+						self.substance.onmousedown=function(){
+								//添加数据
+								var randomx=0;
+								var randomy=0;
+								//位置不能为0;
+								do{
+										randomx=parseInt(Math.random()*10-2);
+										randomy=parseInt(Math.random()*10-5);
+								}while(randomx==0||randomy==0);
+								self.arcboxs[self.arcboxs.length]={
+										x:self.x,	
+										y:self.y,
+										color:"#fff",
+										boxsize:parseInt(Math.random()*10),
+										vx:randomx,
+										vy:randomy,
+								}
+						}
+						//鼠标驱散事件
+						//计算角度
+						for(var i=0;i<self.arcboxs.length;i++){
+								var mincirclex=self.arcboxs[i].x
+								var mincircley=self.arcboxs[i].y
+								var left=Math.pow(Math.abs(self.x-mincirclex),2);
+								var top=Math.pow(Math.abs(self.y-mincircley),2);
+								var sumr=Math.sqrt(left+top);
+								if(sumr<=self.r){
+										//赋值驱散
+										//右上
+										if((self.x-mincirclex)<0&&(self.y-mincircley)>0){
+												if(self.arcboxs[i].vx<0){
+													self.arcboxs[i].vx*=-1;
+												}
+												if(self.arcboxs[i].vy>0){
+													self.arcboxs[i].vy*=-1;
+												}
+										}
+										//左上
+										if((self.x-mincirclex)>0&&(self.y-mincircley)>0){
+												if(self.arcboxs[i].vx>0){
+													self.arcboxs[i].vx*=-1;
+												}
+												if(self.arcboxs[i].vy>0){
+													self.arcboxs[i].vy*=-1;
+												}
+										}
+										//右下
+										if((self.x-mincirclex)<0&&(self.y-mincircley)<0){
+												if(self.arcboxs[i].vx<0){
+													self.arcboxs[i].vx*=-1;
+												}
+												if(self.arcboxs[i].vy<0){
+													self.arcboxs[i].vy*=-1;
+												}
+										}
+										//左下
+										if((self.x-mincirclex)>0&&(self.y-mincircley)<0){
+												if(self.arcboxs[i].vx>0){
+													self.arcboxs[i].vx*=-1;
+												}
+												if(self.arcboxs[i].vy<0){
+													self.arcboxs[i].vy*=-1;
+												}
+										}
+								}
+						}
+				}
+		}
+		//计时器渲染数据
+		main.prototype.drawing=function(){
+				var self=this;
+				//清除画布
+				self.canvas.clearRect(0,0,self.clientW,self.clientH);
+				//鼠标变化
+				self.circle=self.arr[self.index];
+				self.canvas.beginPath();
+				self.canvas.arc(self.x,self.y,self.circle,0,2*Math.PI);
+				self.canvas.lineWidth='3';
+				self.canvas.strokeStyle=self.colors[self.index];
+				self.canvas.stroke();
+				self.canvas.beginPath();
+				self.index++;
+				if(self.index>=6){
+						self.index=0;
+				}
+				//修改数据
+				for(var i=0;i<self.arcboxs.length;i++){
+					//修改元素数据
+						self.arcboxs[i].x=self.arcboxs[i].x+self.arcboxs[i].vx;
+						self.arcboxs[i].y=self.arcboxs[i].y+self.arcboxs[i].vy;
+					//判断检测
+							//撞壁碰撞检测
+							if(self.arcboxs[i].x-self.arcboxs[i].boxsize<0){
+									self.arcboxs[i].x=self.arcboxs[i].boxsize;
+									self.arcboxs[i].vx*=-1;
+							}
+							if(self.arcboxs[i].y-self.arcboxs[i].boxsize<0){
+									self.arcboxs[i].y=self.arcboxs[i].boxsize;
+									self.arcboxs[i].vy*=-1;
+							}
+							if(self.arcboxs[i].x+self.arcboxs[i].boxsize>self.clientW){
+									self.arcboxs[i].x=self.clientW-self.arcboxs[i].boxsize;
+									self.arcboxs[i].vx*=-1;
+							}
+							if(self.arcboxs[i].y+self.arcboxs[i].boxsize>self.clientH){
+									self.arcboxs[i].y=self.clientH-self.arcboxs[i].boxsize;
+									self.arcboxs[i].vy*=-1;
+							}
+							//球碰撞检测
+							var dleft=self.arcboxs[i].x;
+							var dtop=self.arcboxs[i].y;
+							for(var j=0;j<self.arcboxs.length;j++){
+									if(i!=j){
+											var left=Math.pow(Math.abs(dleft-self.arcboxs[j].x),2);
+											var top=Math.pow(Math.abs(dtop-self.arcboxs[j].y),2);
+											var sum=parseInt(Math.sqrt(left+top));
+											//球碰撞检测
+											if(sum<=(self.arcboxs[i].boxsize*2)){
+													//监测到碰撞，然后效正X,Y的位置
+													/*var l1=parseInt(Math.abs(dleft-self.arcboxs[j].x));
+													var l2=parseInt(Math.abs(dtop-self.arcboxs[j].y));
+													var y=(self.arcboxs[i].boxsize*2)*Math.sin(Math.atan(l2/l1));
+													var x=(self.arcboxs[i].boxsize*2)*Math.cos(Math.atan(l2/l1));
+													x=self.arcboxs[i].x+x;
+													y=self.arcboxs[i].y+y;*/
+													if((dleft-self.arcboxs[j].x)<0){
+															self.arcboxs[i].x=self.arcboxs[j].x-(self.arcboxs[j].boxsize*2)-1;
+													}else if((dleft-self.arcboxs[j].x)>0){
+															self.arcboxs[i].x=self.arcboxs[j].x+(self.arcboxs[j].boxsize*2)+1;
+													}
+													if((dtop-self.arcboxs[j].y)<0){
+														self.arcboxs[i].y=self.arcboxs[j].y-(self.arcboxs[j].boxsize*2)-1;
+													}else if((dtop-self.arcboxs[j].y)>0){
+														self.arcboxs[i].y=self.arcboxs[j].y+(self.arcboxs[j].boxsize*2)+1;
+													}
+													self.arcboxs[i].vx*=-1;
+													self.arcboxs[i].vy*=-1;
+													self.arcboxs[j].vx*=-1;
+													self.arcboxs[j].vy*=-1;
+											}
+											if(sum<=(self.arcboxs[i].boxsize*2*8)){
+													var color1=parseInt(Math.random()*255);
+													var color2=parseInt(Math.random()*255);
+													var color3=parseInt(Math.random()*255);
+													self.canvas.beginPath();
+													self.canvas.moveTo(self.arcboxs[i].x,self.arcboxs[i].y);
+													self.canvas.lineTo(self.arcboxs[j].x,self.arcboxs[j].y);
+													self.canvas.lineWidth="3";
+													self.canvas.strokeStyle='rgba('+color1+','+color2+','+color3+',0.5)';
+													self.canvas.stroke();
+													self.canvas.closePath();
+											}
+									}
+							}
+					//渲染元素画布
+						self.canvas.beginPath();
+						self.canvas.arc(self.arcboxs[i].x,self.arcboxs[i].y,self.arcboxs[i].boxsize,0,Math.PI*2);
+						self.canvas.fillStyle=self.arcboxs[i].color;
+						var color1=parseInt(Math.random()*255);
+						var color2=parseInt(Math.random()*255);
+						var color3=parseInt(Math.random()*255);
+						self.canvas.strokeStyle="";
+						self.canvas.lineWidth="12";
+						self.canvas.fill();
+						self.canvas.stroke();
+						self.canvas.closePath();
+						
+						
+				}
+		}
+		
+		
+		
+		
+		
+		
+		
+		//开始游戏
+		var play=new main();
+		play.begin();
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

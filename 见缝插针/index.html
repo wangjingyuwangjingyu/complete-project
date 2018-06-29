@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>见缝插针</title>
+	<style type="text/css">
+		body,html{
+			width:100%;
+			height:100%;
+			margin:0px;
+		}
+		#can{
+			background: #000;
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			margin: auto;
+		}
+	</style>
+</head>
+<body>
+	
+	<canvas id="can">你的浏览器不支持H5，请换浏览器</canvas>
+</body>
+</html>
+<script type="text/javascript">
+	// 主函数(全局变量)
+	function main(argument) {
+		this.substance=document.getElementById("can");
+		this.canvas=this.substance.getContext("2d");
+		this.clientW=document.documentElement.clientWidth;
+		this.clientH=document.documentElement.clientHeight;
+		this.shedarr=[];
+		this.waitarr=[
+			{
+				x:0,
+				y:0,
+				data:"",
+				size:15,
+				index:90,
+			},
+			{
+				x:0,
+				y:0,
+				data:"",
+				size:15,
+				index:180,
+			},
+			{
+				x:0,
+				y:0,
+				data:"",
+				size:15,
+				index:270,
+			},
+			{
+				x:0,
+				y:0,
+				data:"",
+				size:15,
+				index:360,
+			},
+		];
+		this.index=0;
+		this.flag=false;
+		this.t;
+		this.flagsuccess=false;
+	}
+	//入口
+	main.prototype.begin=function(){
+		var self=this;
+		self.load();
+		self.t=window.setInterval(function(){
+			self.fun();
+		},10);
+		self.clickevent();
+	}
+	//加载页面
+	main.prototype.load=function(){
+		var self=this;
+		// 画布设置
+		self.substance.width=self.clientW;
+		self.substance.height=self.clientH;
+		self.canvas.translate(self.clientW/2-100,self.clientH/2-150);
+		for(var i=0;i<10;i++){
+			self.shedarr[i]={
+				x:100,
+				y:10*i*4+420,
+				data:i+1,
+				size:15,
+				index:90,
+			}
+		}
+	}
+	//计时器事件函数
+	main.prototype.fun=function(){
+		var self=this;
+		//清楚画布
+		self.canvas.clearRect(-1*self.clientW,-1*self.clientH,self.clientW*2,self.clientH*2);
+		//扫描栈中的数据
+		for(var i=self.shedarr.length-1;i>=0;i--){
+			// //小球文字渲染
+			self.canvas.beginPath();
+			self.canvas.arc(self.shedarr[i].x,self.shedarr[i].y,self.shedarr[i].size,0,Math.PI*2);
+			self.canvas.fill();
+			self.canvas.closePath();
+			//小球文字渲染
+			self.canvas.beginPath();
+			self.canvas.font="22px 宋体";
+			self.canvas.strokeText(self.shedarr[i].data,self.shedarr[i].x-5,self.shedarr[i].y+10);
+			self.canvas.strokeStyle="#000";
+			self.canvas.stroke();
+			self.canvas.closePath();
+		}
+		// 修改数据
+		self.index++;
+		for(var i=0;i<self.waitarr.length;i++){
+			self.waitarr[i].index++;
+			if (self.waitarr[i].index>360) {
+				self.waitarr[i].index=0;
+			}
+			self.waitarr[i].x=Math.cos(Math.PI/180*self.waitarr[i].index)*230+100;
+			self.waitarr[i].y=Math.sin(Math.PI/180*self.waitarr[i].index)*230+100;
+		}
+		// 扫描旋转的数组
+		for(var i=0;i<self.waitarr.length;i++){
+			//小球连线
+			// console.dir(self.waitarr[i].index);
+			self.canvas.beginPath();
+			self.canvas.moveTo(100,100);
+			self.canvas.lineTo(self.waitarr[i].x,self.waitarr[i].y);
+			self.canvas.strokeStyle='#fff';
+			self.canvas.stroke();
+			self.canvas.closePath();
+			//小球渲染
+			self.canvas.beginPath();
+			self.canvas.moveTo(self.waitarr[i].x,self.waitarr[i].y);
+			self.canvas.arc(self.waitarr[i].x,self.waitarr[i].y,self.waitarr[i].size,0,Math.PI*2);
+			self.fillStyle="#fff";
+			self.canvas.fill();
+			self.canvas.closePath();
+			//文字渲染
+			self.canvas.beginPath();
+			self.canvas.font="12px 宋体";
+			self.canvas.strokeText(self.waitarr[i].data,self.waitarr[i].x-7,self.waitarr[i].y+10);
+			self.canvas.strokeStyle="#fff";
+			self.canvas.stroke();
+			self.canvas.closePath();
+		}
+		// 画圆
+		self.canvas.beginPath();
+		self.canvas.arc(100,100,100,0,Math.PI*2);
+		self.canvas.fillStyle='#fff';
+		self.canvas.fill();
+		self.canvas.closePath();
+		//绘制文字
+		self.canvas.beginPath();
+		self.canvas.font="30px 宋体";
+		self.canvas.strokeStyle='red';
+		self.canvas.strokeText('见缝插针',45,108);
+		self.canvas.stroke();
+		self.canvas.fill();
+		self.canvas.closePath();
+		if(self.flag){
+			window.clearInterval(self.t);
+			var div=document.createElement("div");
+			div.style.cssText="width:300px;height:200px;color:#fff;position:absolute;left:50%;margin-left:-150px;top:50%;margin-top:-100px;border:1px solid #000;text-align:center;line-height:200px;background:#fff;font-size:60px;color:#000;border-radius:20px;";
+			div.innerText="游戏结束";
+			document.documentElement.appendChild(div);
+		}else if(self.flagsuccess){
+			window.clearInterval(self.t);
+			var div=document.createElement("div");
+			div.style.cssText="width:450px;height:200px;color:#fff;position:absolute;left:50%;margin-left:-225px;top:50%;margin-top:-100px;border:3px solid #000;text-align:center;line-height:200px;background:#fff;font-size:60px;color:red;border-radius:20px;";
+			div.innerText="恭喜你游戏胜利";
+			document.documentElement.appendChild(div);
+		}
+	} 
+	// 添加事件
+	main.prototype.clickevent=function(){
+		var self=this;
+		//触发事件添加到旋转队列中
+		self.substance.onclick=function(){
+			// 数据插入另一个队列
+			if(self.shedarr.length){
+				self.shedarr[0].x=0;
+				self.shedarr[0].y=0;
+				self.shedarr[0].index=90;
+				self.waitarr[self.waitarr.length]=self.shedarr[0];
+				for(var i=0;i<self.shedarr.length-1;i++){
+					self.shedarr[i]=self.shedarr[i+1];
+					self.shedarr[i].y=10*i*4+420;
+				}
+				self.shedarr.length--;
+			}
+			//判断是否碰撞(结束游戏)
+			for(var i=0;i<self.waitarr.length-1;i++){
+				if(self.waitarr[i].index>=83&&self.waitarr[i].index<=97){
+					self.flag=true;
+					break;
+				}
+			}
+			//判断是否碰撞(结束游戏)
+			if(self.shedarr.length<=0){
+				self.flagsuccess=true;
+			}
+		}
+	}
+
+
+	// 游戏开始
+	var play=new main();
+	play.begin();
+</script>

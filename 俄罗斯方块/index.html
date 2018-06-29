@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>俄罗斯方块</title>
+	<style>
+		body{
+			margin:0px;
+			position: relative;
+			-webkit-tap-highlight-color: rgba(0,0,0,0);
+		}
+		header{
+			width: 100%;
+			height: 50px;
+			position: absolute;
+			font-size: 45px;
+			text-align: center;
+			font-weight: 1000;
+		}
+		#box{
+			width: 300px;
+			height: 600px;
+			border: 2px solid #000;
+			position: fixed;
+			top: 0px;
+			left: 0px;
+			right: 0px;
+			bottom: 0px;
+			margin: auto;
+		}
+		#btn{
+			font-size: 28px;
+			padding: 3px 8px;
+			border-radius: 15px;
+			position: fixed;
+			left: 10px;
+			bottom: 15px;
+			tap-highlight-color: rgba(0,0,0,0)!important;
+			-webkit-tap-highlight-color: transparent !important;
+		}
+		#minbox{
+			width: 150px;
+			height: 150px;
+			border: 5px solid deeppink;
+			display: block;
+			border-radius: 10px;
+		}
+		#hehe{
+			height: 250px;
+			position: absolute;
+			top: 150px;
+			right: 50px;
+		}
+		#hehe p{
+			display: block;
+			height: 25px;
+		}
+		#hehe p span{
+			text-align: center;
+			vertical-align: middle;
+		}
+		#hehe p span:first-child{
+			color:cornflowerblue;
+			padding-left: 6px;
+		}
+		#hehe p span:last-child{
+			color: #000;
+		}
+		#style{
+			width: 100px;
+			height: 50px;
+			display: block;
+			position:fixed;
+			left:0px;
+			right:0px;
+			bottom:0px;
+			top:0px;
+			margin:auto;
+			vertical-align: middle;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<header>俄罗斯方块</header>
+	<div id="box"></div>
+	<div id="style"></div>
+	<!--游戏状态-->
+	<div id="hehe">
+		<div id="minbox"></div>
+		<p>
+			<span>已用时:</span>
+			<span id="date">0时0分0秒</span>
+		</p>
+		<p>
+			<span>得分:</span>
+			<span id="score">0分</span>
+		</p>
+	</div>
+	<input type="button" value="开始游戏" id="btn">
+</body>
+</html>
+<script>
+var qself;
+	// 定义对象游戏封装
+function play() {
+    this.t1=document.getElementById("date");
+    this.ts=0;
+    this.tf=0;
+    this.tx=0;
+    this.flagplay=true;
+    this.style=document.getElementById("style");
+		//全局this
+    qself=this;
+	//全局变量
+	this.bigbox=document.getElementById('box');
+	this.btn=document.querySelector("#btn");
+	this.array=[];
+	this.zjhz=[];
+	this.time;
+	this.divw=28;
+	this.divh=28;
+	//原始数据（方块格式）
+	this.fkall=[
+        //格式一(不变)
+		[
+			[0,1,0,0],
+			[0,1,0,0],
+			[0,1,0,0],
+			[0,1,0,0],
+		],
+		//格式二
+		[
+			[0,1,0,0],
+			[0,1,1,0],
+			[0,1,0,0],
+			[0,0,0,0],
+		],
+		//格式三
+		[
+			[0,1,0,0],
+			[0,1,0,0],
+			[0,1,0,0],
+			[0,1,1,0],
+		],
+		//格式四（不变）
+		[
+			[0,1,1,0],
+			[0,1,1,0],
+			[0,0,0,0],
+			[0,0,0,0],
+		],
+		//格式五
+		[
+			[1,1,0,0],
+			[0,1,1,0],
+			[0,0,0,0],
+			[0,0,0,0],
+		],
+	];
+	//变形数据方格（一共三个形变）
+	this.bianxing=[
+        [
+            [
+                [0,1,0,0],
+                [0,1,1,0],
+                [0,1,0,0],
+                [0,0,0,0],
+            ],
+            [
+                [0,0,0,0],
+                [1,1,1,0],
+                [0,1,0,0],
+                [0,0,0,0],
+            ],
+            [
+                [0,1,0,0],
+                [1,1,0,0],
+                [0,1,0,0],
+                [0,0,0,0],
+            ],
+            [
+                [0,1,0,0],
+                [1,1,1,0],
+                [0,0,0,0],
+                [0,0,0,0],
+            ],
+        ],
+        [
+            [
+                [0,1,0,0],
+                [0,1,0,0],
+                [0,1,0,0],
+                [0,1,1,0],
+            ],
+            [
+                [0,0,0,0],
+                [1,1,1,1],
+                [0,0,0,1],
+                [0,0,0,0],
+            ],
+            [
+                [0,1,0,0],
+                [0,1,0,0],
+                [0,1,0,0],
+                [1,1,0,0],
+            ],
+            [
+                [1,0,0,0],
+                [1,1,1,1],
+                [0,0,0,0],
+                [0,0,0,0],
+            ],
+        ],
+        [
+            [
+                [1,1,0,0],
+                [0,1,1,0],
+                [0,0,0,0],
+                [0,0,0,0],
+            ],
+            [
+                [0,0,1,0],
+                [0,1,1,0],
+                [0,1,0,0],
+                [0,0,0,0],
+            ],
+            [
+                [0,0,0,0],
+                [1,1,0,0],
+                [0,1,1,0],
+                [0,0,0,0],
+            ],
+        ],
+        [
+            [
+                [0,1,0,0],
+                [0,1,0,0],
+                [0,1,0,0],
+                [0,1,0,0],
+            ],
+            [
+                [0,0,0,0],
+                [1,1,1,1],
+                [0,0,0,0],
+                [0,0,0,0],
+            ],
+        ],
+	]
+	this.blnum=0;
+//	小画布变量
+// 	小方块全局变量
+	this.minhb=document.getElementById("minbox");
+	this.minhbbox=[];
+	this.minhbboxsize=13;
+	this.flagpengbi=true;
+
+}
+// 入口
+play.prototype.play=function(){
+    var self=this;
+    //初始画布
+	this.huabu();
+	//点击开始游戏事件
+	this.btn.onclick=function(){
+		self.animate();
+    }
+}
+//开始游戏动画
+play.prototype.animate=function(){
+    var self=this;
+    if(self.flagplay){
+        var div1=document.createElement("div");
+        div1.style.cssText="width:100%;height:100%;text-align:center;font-size:120px;line-height:50px;color:red;";
+        div1.innerText="1";
+        self.style.appendChild(div1);
+        window.setTimeout(function () {
+            self.style.removeChild(div1);
+            var div2=document.createElement("div");
+            div2.style.cssText="width:100%;height:100%;text-align:center;font-size:150px;line-height:50px;color:blue;";
+            div2.innerText="2";
+            self.style.appendChild(div2);
+            window.setTimeout(function () {
+                self.style.removeChild(div2);
+                var div3=document.createElement("div");
+                div3.style.cssText="width:100%;height:100%;text-align:center;font-size:180px;line-height:50px;color:pink;";
+                div3.innerText="3";
+                self.style.appendChild(div3);
+                window.setTimeout(function () {
+                    div3.innerText="Go!!!";
+                    div3.style.color="yellow";
+                    self.flagplay=false;
+                    window.setTimeout(function () {
+                        self.style.removeChild(div3);
+                        window.setTimeout(function () {
+                            //开始游戏
+                            self.show();
+                            //计时
+                            window.setInterval(function () {
+                                self.showtime();
+                            },1000);
+                        },500);
+                    },1000);
+                },1000);
+            },1000);
+        },1000);
+	}
+}
+// 绘制画布
+play.prototype.huabu=function(){
+    var self=this;
+	for(var i=0;i<20;i++){
+		var arr=[];
+		for(var j=0;j<10;j++){
+			var div=document.createElement("div");
+			div.style.cssText="font-size:8px;width:"+this.divw+"px;height:"+this.divh+"px;border:1px solid #ccc;float:left;background:rgba(0,1,1,0.1);";
+			this.bigbox.appendChild(div);
+			arr[j]={
+				div:div,
+				bgcolor:"red",
+				wz:i+"-"+j,
+				data:0,
+			};
+		}
+		this.array[i]=arr;
+	}
+//	绘制小画布
+	for(var i=0;i<10;i++){
+	    var arr=[];
+	    for(var j=0;j<10;j++){
+			var div=document.createElement("div");
+			div.style.cssText="width:"+self.minhbboxsize+"px;height:"+self.minhbboxsize+"px;border:1px solid #ccc;float:left;background:deeppink;";
+			arr[j]={
+				div:div,
+				i:i,
+				j:j,
+				data:0,
+				yuancolor:"deeppink",
+				biancolor:"#000",
+			}
+			qself.minhb.appendChild(div);
+	    }
+	    qself.minhbbox[i]=arr;
+	}
+	//点击事件定义上下左右健
+	window.onkeydown=function(key){
+		var code=key.keyCode;
+		//37为左
+		if(code==37){
+            //找到一个元素的有价值最大值坐标和有价值最小坐标，
+            var maxx=0,maxy=0,minx=4,miny=4;
+            for(var i=0;i<4;i++){
+                for(var j=0;j<4;j++){
+                    if(qself.zjhz[qself.zjhz.length-1].div[i][j]==1){
+                        //最大值坐标
+                        if(i>maxx||j>maxy){
+                            maxx=i;
+                            maxy=j;
+                        }
+                        //最小值坐标
+                        if(i<minx||j<miny){
+                            minx=i;
+                            miny=j;
+                        }
+                    }
+                }
+            }
+			var m=qself.zjhz[qself.zjhz.length-1].y-1;
+			if(miny+m>=0){
+                qself.zjhz[qself.zjhz.length-1].y=m;
+			}
+		}
+		//38为上
+		if(code==38){
+		    var index=qself.zjhz[qself.zjhz.length-1].ram;
+		    if(index!=3){
+				//	方块可以改变
+				var bl=++qself.blnum;
+				if(bl>=qself.bianxing[0][0].length){
+				    bl=0;
+				    qself.blnum=0;
+				}
+				if(index==1){
+				    qself.zjhz[qself.zjhz.length-1].div=qself.bianxing[0][bl];
+				}
+                if(index==2){
+                    qself.zjhz[qself.zjhz.length-1].div=qself.bianxing[1][bl];
+                }
+                if(index==4){
+                    qself.zjhz[qself.zjhz.length-1].div=qself.bianxing[2][bl];
+                }
+                if(index==0){
+                    if(bl>=2){
+                        bl=0;
+                        qself.blnum=0;
+                    }
+                    qself.zjhz[qself.zjhz.length-1].div=qself.bianxing[3][bl];
+                }
+		    }else{
+		        var flag=document.getElementById("bltext");
+		        if(!flag){
+                    //方块不可变
+                    var div=document.createElement("div");
+                    div.style.cssText="background:#fff;width:100%;height:100%;text-align:center;vertical-align: middle;line-height: 50px;font-size:14px;font-weight:bold;";
+                    div.id="bltext";
+                    div.innerText="方块不可变";
+                    qself.style.appendChild(div);
+                    window.setTimeout(function(){
+                        qself.style.removeChild(div);
+                    },1000);
+				}
+			}
+		}
+		//39为右
+		if(code==39){
+            //找到一个元素的有价值最大值坐标和有价值最小坐标，
+            var maxx=0,maxy=0,minx=4,miny=4;
+            for(var i=0;i<4;i++){
+                for(var j=0;j<4;j++){
+                    if(qself.zjhz[qself.zjhz.length-1].div[i][j]==1){
+                        //最大值坐标
+                        if(i>maxx||j>maxy){
+                            maxx=i;
+                            maxy=j;
+                        }
+                        //最小值坐标
+                        if(i<minx||j<miny){
+                            minx=i;
+                            miny=j;
+                        }
+                    }
+                }
+            }
+            var m=qself.zjhz[qself.zjhz.length-1].y+1;
+            if(m+maxy<10){
+                qself.zjhz[qself.zjhz.length-1].y=m;
+            }
+		}
+		//40为下
+		if(code==40){
+            qself.zjhz[qself.zjhz.length-1].x++;
+		}
+	}
+}
+// 方格上出现新的方块
+play.prototype.show=function(){
+    // 生成插入新的数据
+    var self1=this;
+    var x;
+    var ram=parseInt(Math.random()*this.fkall.length);
+    do{
+        x=parseInt(Math.random()*10);
+    }while(x+4>10);
+    this.zjhz[this.zjhz.length]={
+		div:self1.fkall[ram],
+		ram:ram,
+		x:0,
+		y:x,
+		live:1,
+	};
+    self.blnum=0;
+    //小方块提示下一个元素
+    for(var i=4,m=0;i<8;i++,m++){
+        for(var j=4,k=0;j<8;j++,k++) {
+			if(self1.zjhz[self1.zjhz.length-1].div[m][k]==1){
+                       self1.minhbbox[i][j].div.style.background=self1.minhbbox[i][j].biancolor;
+			}
+		}
+	}
+    //调用自动刷新画布*************************************************
+    self1.time=window.setInterval(self1.auto,1000);
+    self1.time1=window.setInterval(self1.qhbsx,10);
+}
+play.prototype.qhbsx=function(){
+    //渲染已经落下的方块
+    for(var i=0;i<qself.zjhz.length-1;i++){
+        for(var j=qself.zjhz[i].x,t=0;j<qself.zjhz[i].x+4;j++,t++){
+            for(var k=qself.zjhz[i].y,g=0;k<qself.zjhz[i].y+4;k++,g++){
+                if(qself.zjhz[i].div[t][g]==1) {
+                    qself.array[j][k].div.style.background = "black";
+                }
+            }
+        }
+    }
+    //判断不要碰到其他方块
+    var dx=qself.zjhz[qself.zjhz.length-1].x;
+    var dy=qself.zjhz[qself.zjhz.length-1].y;
+    var arr=[];
+    for(var i=0;i<4;i++){
+		var minarr=[];
+        for(var j=0;j<4;j++){
+			minarr[j]={
+				x:dx+i,
+				y:dy+j,
+			};
+		}
+		arr[i]=minarr;
+	}
+    for(var l=0;l<qself.zjhz.length-1;l++){
+    //     //     //大致判断当前方块下面是否有元素
+        var x=qself.zjhz[l].x;
+        var y=qself.zjhz[l].y;
+        for(var i=0;i<4;i++){
+            for(var j=0;j<4;j++){
+                if(arr[i][j].x==(x+i) && arr[i][j].y==(y+j)){
+						console.dir(1);
+				}
+            }
+		}
+    }
+//    判断消去一行
+}
+//自动方块下移
+play.prototype.auto=function (self) {
+    //清除画布
+    for(var i=0;i<qself.array.length;i++){
+        for(var j=0;j<qself.array[i].length;j++){
+            qself.array[i][j].div.style.background="rgba(0,1,1,0.1)";
+        }
+    }
+    //修改栈中数据（自动只是自动高度）
+    var x=qself.zjhz[qself.zjhz.length-1].x++;
+    var y=qself.zjhz[qself.zjhz.length-1].y;
+    //找到一个元素的有价值最大值坐标和有价值最小坐标，
+    var maxx=0,maxy=0,minx=4,miny=4;
+    for(var i=0;i<4;i++){
+        for(var j=0;j<4;j++){
+			if(qself.zjhz[qself.zjhz.length-1].div[i][j]==1){
+                //最大值坐标
+				if(i>maxx||j>maxy){
+					maxx=i;
+                    maxy=j;
+				}
+				//最小值坐标
+				if(i<minx||j<miny){
+					minx=i;
+					miny=j;
+				}
+			}
+		}
+	}
+    //判断不要碰壁
+    if(qself.zjhz[qself.zjhz.length-1].x+maxx<qself.array.length-1&&qself.flagpengbi){
+		//判断是否继续执行
+            //渲染当前画布移动方块
+            for(var i=x,k=0;i<x+4;i++,k++){
+                for(var j=y,n=0;j<y+4;j++,n++){
+                    if(qself.zjhz[qself.zjhz.length-1].div[k][n]==1) {
+                        qself.array[i][j].div.style.background = qself.array[i][j].bgcolor;
+                    }
+                }
+            }
+    }else{
+        qself.flagpengbi=true;
+        qself.zjhz[qself.zjhz.length-1].live=0;
+		qself.addnode();
+	}
+}
+//生成插入新的方块节点,并且渲染小画布(封装类)
+play.prototype.addnode=function () {
+    var x;
+    var ram=parseInt(Math.random()*qself.fkall.length);
+    do{
+        x=parseInt(Math.random()*10);
+    }while(x+4>10);
+    qself.zjhz[qself.zjhz.length]={
+        div:qself.fkall[ram],
+		ram:ram,
+        x:0,
+        y:x,
+        live:1,
+    };
+    //小方块提示下一个元素
+    //(清除小画布)
+	for(var i=0;i<qself.minhbbox.length;i++){
+	    for(var j=0;j<qself.minhbbox[i].length;j++){
+            qself.minhbbox[i][j].div.style.background=qself.minhbbox[i][j].yuancolor;
+		}
+	}
+    //渲染小画布
+    for(var i=4,m=0;i<8;i++,m++) {
+        for (var j = 4, k = 0; j < 8; j++, k++) {
+            if (qself.zjhz[qself.zjhz.length - 1].div[m][k] == 1) {
+                qself.minhbbox[i][j].div.style.background = qself.minhbbox[i][j].biancolor;
+            }
+        }
+    }
+}
+//计时器
+play.prototype.showtime=function () {
+	var self=this;
+	self.ts++;
+	if(self.ts>60){
+		self.ts=0;
+		self.tf++;
+	}
+	if(self.tf>60){
+		self.tf=0;
+		self.tx++;
+	}
+	self.t1.innerText=self.tx+"时"+self.tf+"分"+self.ts+"秒";
+
+}
+
+
+
+
+
+
+
+
+
+
+// 开始游戏
+var begin=new play();
+begin.play();
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

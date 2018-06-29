@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>贪吃蛇</title>
+	<style>
+	body{
+		margin: 0px;
+		width: 100%;
+		height:100%;
+		background: #000;
+	}
+	#can{
+		background:#000;
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		right: 0px;
+		bottom: 0px;
+		margin: auto;
+	}
+	</style>
+</head>
+<body>
+	<canvas id="can"></canvas>
+</body>
+</html>
+<script type="text/javascript">
+var self;
+function main() {
+	this.substance=document.getElementById("can");
+	this.canvas=this.substance.getContext("2d");
+	this.clientwidth=document.documentElement.clientWidth;
+	this.clientheight=document.documentElement.clientHeight;
+	this.cw=600;
+	this.ch=600;
+	this.arr=[];
+	this.she=[
+		{
+			x:0,
+			y:1,
+			color:'red',
+		},
+		{
+			x:1,
+			y:1,
+			color:'red',
+		},
+		{
+			x:2,
+			y:1,
+			color:'red',
+		},
+		//数组尾部是头部
+		{
+			x:3,
+			y:1,
+			color:'blue',
+		},
+	];
+	this.fx=[
+		{
+			data:'上',
+			index:0,
+		},
+		{
+			data:'下',
+			index:1,
+		},
+		{
+			data:'左',
+			index:0,
+		},
+		{
+			data:'右',
+			index:0,
+		}
+	];
+	this.speed=1;
+	this.time=300;
+	this.flagTime;
+	this.eatnum=5;
+	this.time1=100000;
+	this.flagTime1;
+	this.eat={
+		num:0,
+		x:0,
+		y:0,
+		color:"pink",
+	};
+	self=this;
+}
+main.prototype.begin=function(){
+	var self=this;
+	self.load(function(){
+		self.flagTime=window.setInterval(self.animation,self.time);
+		self.flagTime1=window.setInterval(self.eat,self.time1);
+		//初始化投放食物
+		var ranx,rany,flag=false;
+		do{
+			ranx=parseInt(Math.random()*self.arr.length);
+			rany=parseInt(Math.random()*self.arr.length);
+			for(var k=0;k<self.she.length;k++){
+				if(ranx==self.she[k].x&&rany==self.she[k].y){
+					flag=true;
+					break;
+				}
+			}
+		}while(flag);
+		self.eat.x=ranx;
+		self.eat.y=rany;
+		self.eat.num=1;
+		self.canvas.beginPath();
+		self.canvas.arc(ranx*20+10,rany*20+10,10,0,Math.PI*2);
+		self.canvas.fillStyle=self.eat.color;
+		self.canvas.fill();
+		self.canvas.closePath();
+
+		// 食物图片渲染
+		self.canvas.beginPath();
+		var img=new Image();
+		img.src="eat.jpg";
+		self.canvas.drawImage(img,ranx*20,rany*20,20,20);
+		self.canvas.closePath();
+	});
+}
+main.prototype.load=function(fun){
+	var self=this;
+	self.substance.width=self.cw;
+	self.substance.height=self.ch;
+	//调用画布
+	self.drawingload();
+	// 调用动画加载
+	fun();
+	//调用鼠标事件
+	self.keyconsole();
+}
+// 随机投放食物
+main.prototype.eat=function(){
+	for(var i=0;i<self.eatnum;i++){
+		var ranx,rany,flag=false;
+		do{
+			ranx=parseInt(Math.random()*self.arr.length);
+			rany=parseInt(Math.random()*self.arr.length);
+			for(var k=0;k<self.she.length;k++){
+				if(ranx==self.she[k].x&&rany==self.she[k].y){
+					flag=true;
+					break;
+				}
+			}
+		}while(flag);
+		self.canvas.beginPath();
+		self.canvas.arc(ranx*20+10,rany*20+10,10,0,Math.PI*2);
+		self.canvas.fill();
+		self.canvas.closePath();
+	}
+}
+//计时动画,并修改数据
+main.prototype.animation=function(){
+	self.canvas.clearRect(0,0,self.clientwidth,self.clientheight);
+	//修改蛇的数据
+	//保存头部数据
+	var previousx=self.she[self.she.length-1].x;
+	var previousy=self.she[self.she.length-1].y;
+	//修改蛇身体
+	//跟随方向键走
+	for(var i=0;i<self.fx.length;i++){
+		if(self.fx[i].index==1){
+			if(self.fx[i].data=="上"){
+				self.she[self.she.length-1].y-=self.speed;
+			}
+			if(self.fx[i].data=="下"){
+				self.she[self.she.length-1].y+=self.speed;
+			}
+			if(self.fx[i].data=="左"){
+				self.she[self.she.length-1].x-=self.speed;
+			}
+			if(self.fx[i].data=="右"){
+				self.she[self.she.length-1].x+=self.speed;
+			}
+		}
+	}
+	// 蛇碰墙判断
+	if(self.she[self.she.length-1].x>29){
+		self.she[self.she.length-1].x=29;
+		var div=document.createElement("div");
+		div.style.cssText="width:300px;height:100px;line-height:100px;text-align:center;color:red;background:#fff;font-size:80px;z-index:99;border:1px solid #000;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-50px;";
+		div.innerText="你输了";
+		document.documentElement.appendChild(div);
+		window.clearInterval(self.flagTime);
+	}else if(self.she[self.she.length-1].x<0){
+		self.she[self.she.length-1].x=0;
+		var div=document.createElement("div");
+		div.style.cssText="width:300px;height:100px;line-height:100px;text-align:center;color:red;background:#fff;font-size:80px;z-index:99;border:1px solid #000;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-50px;";
+		div.innerText="你输了";
+		document.documentElement.appendChild(div);
+		window.clearInterval(self.flagTime);
+	}else if(self.she[self.she.length-1].y<0){
+		self.she[self.she.length-1].y=0;
+		var div=document.createElement("div");
+		div.style.cssText="width:300px;height:100px;line-height:100px;text-align:center;color:red;background:#fff;font-size:80px;z-index:99;border:1px solid #000;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-50px;";
+		div.innerText="你输了";
+		document.documentElement.appendChild(div);
+		window.clearInterval(self.flagTime);
+	}else if(self.she[self.she.length-1].y>29){
+		self.she[self.she.length-1].y=29;
+		var div=document.createElement("div");
+		div.style.cssText="width:300px;height:100px;line-height:100px;text-align:center;color:red;background:#fff;font-size:80px;z-index:99;border:1px solid #000;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-50px;";
+		div.innerText="你输了";
+		document.documentElement.appendChild(div);
+		window.clearInterval(self.flagTime);
+	}
+	//蛇身体
+	// if(!(self.she[self.she.length-1].x==29||self.she[self.she.length-1].x==0||self.she[self.she.length-1].y==29||self.she[self.she.length-1].y==0)){
+		for(var i=0;i<self.she.length-1;i++){
+			if(i<self.she.length-2){
+				self.she[i].x=self.she[i+1].x;
+				self.she[i].y=self.she[i+1].y;
+			}else{
+				self.she[i].x=previousx;
+				self.she[i].y=previousy;
+			}
+		}
+	// }
+	//判断是否咬到了自己的身体
+	for(var k=0;k<self.she.length-1;k++){
+		if(self.she[k].x==self.she[self.she.length-1].x&&self.she[self.she.length-1].y==self.she[k].y){
+			var div=document.createElement("div");
+			div.style.cssText="width:300px;height:100px;line-height:100px;text-align:center;color:red;background:#fff;font-size:80px;z-index:99;border:1px solid #000;position:absolute;left:50%;top:50%;margin-left:-150px;margin-top:-50px;";
+			div.innerText="你输了";
+			document.documentElement.appendChild(div);
+			window.clearInterval(self.flagTime);
+		}
+	}
+	// 判断是否吃了食物
+	if(self.she[self.she.length-1].x==self.eat.x&&self.she[self.she.length-1].y==self.eat.y){
+		// 加长蛇
+		var sheobject={
+			x:self.eat.x,
+			y:self.eat.y,
+			color:'red',
+		};
+		self.she.splice(0,0,sheobject);	
+		self.eat.num=0;
+		//吃了投放食物
+		var ranx,rany,flag=false;
+		do{
+			ranx=parseInt(Math.random()*self.arr.length);
+			rany=parseInt(Math.random()*self.arr.length);
+			for(var k=0;k<self.she.length;k++){
+				if(ranx==self.she[k].x&&rany==self.she[k].y){
+					flag=true;
+					break;
+				}
+			}
+		}while(flag);
+		self.eat.x=ranx;
+		self.eat.y=rany;
+		self.eat.num=1;
+		self.canvas.beginPath();
+		self.canvas.arc(ranx*20+10,rany*20+10,10,0,Math.PI*2);
+		self.canvas.fillStyle=self.eat.color;
+		self.canvas.fill();
+		self.canvas.closePath();
+	}
+	//渲染画布
+	self.drawingnow();
+}
+//	键盘按键操控
+main.prototype.keyconsole=function(){
+	var self=this;
+	// 按下去操控鼠标事件
+	window.onkeydown=function(key){
+		var code=key.keyCode;
+		var indexchar="无";
+		//改变方向
+		if(code==37||code==38||code==39||code==40){
+			for(var i=0;i<self.fx.length;i++){
+				if(self.fx[i].index==1){
+					indexchar=self.fx[i].data;
+				}
+				self.fx[i].index=0;
+			}
+		}
+		// 左
+		if(code==37){
+			if(indexchar!="右"){
+				self.fx[2].index=1;
+			}else{
+				self.fx[3].index=1;
+			}
+		}
+		// 上
+		if(code==38){
+			if(indexchar!="下"){
+				self.fx[0].index=1;
+			}else{
+				self.fx[1].index=1;
+			}
+		}
+		// 右
+		if(code==39){
+			if(indexchar!="左"){
+				self.fx[3].index=1;
+			}else{
+				self.fx[2].index=1;
+			}
+		}
+		// 下
+		if(code==40){
+			if(indexchar!="上"){
+				self.fx[1].index=1;
+			}else{
+				self.fx[0].index=1;
+			}
+		}
+		// 空格加速
+		if(code==32){
+			window.clearInterval(self.flagTime);
+			self.time=50;
+			self.flagTime=window.setInterval(self.animation,self.time);
+			//取消加速
+			window.onkeyup=function(){
+				window.clearInterval(self.flagTime);
+				self.time=300;
+				self.flagTime=window.setInterval(self.animation,self.time);
+			}
+		}
+	}
+}
+// onkeypress
+// 画布封装现在调用
+main.prototype.drawingnow=function(){
+	var self=this;
+	//渲染画布
+	for(var i=0;i<self.arr.length;i++){
+		for(var j=0;j<self.arr[i].length;j++){
+			self.canvas.beginPath();
+			self.canvas.arc(self.arr[i][j].x,self.arr[i][j].y,10,0,Math.PI*2);
+			self.canvas.fillStyle='#fff';
+			self.canvas.fill();
+			self.canvas.closePath();
+		}
+	}
+	//渲染蛇
+	for(var k=0;k<self.she.length;k++){
+		self.canvas.beginPath();
+		self.canvas.arc(self.arr[self.she[k].x][self.she[k].y].y,self.arr[self.she[k].x][self.she[k].y].x,10,0,Math.PI*2);
+		self.canvas.fillStyle=self.she[k].color;
+		self.canvas.fill();
+		self.canvas.closePath();
+	}
+	//渲染食物
+	self.canvas.beginPath();
+	self.canvas.arc(self.eat.x*20+10,self.eat.y*20+10,10,0,Math.PI*2);
+	self.canvas.fillStyle=self.eat.color;
+	self.canvas.fill();
+	self.canvas.closePath();
+	// 蛇头图片渲染
+	self.canvas.beginPath();
+	var img=new Image();
+	img.src="she.jpg";
+	self.canvas.drawImage(img,self.she[self.she.length-1].x*20,self.she[self.she.length-1].y*20,20,20);
+	self.canvas.closePath();
+	// 食物图片渲染
+	self.canvas.beginPath();
+	var img=new Image();
+	img.src="eat.jpg";
+	self.canvas.drawImage(img,self.eat.x*20,self.eat.y*20,20,20);
+	self.canvas.closePath();
+}
+// 画布封装
+main.prototype.drawingload=function(){
+	var self=this;
+	for(var i=0;i<30;i++){
+		var arrs=[];
+		for(var j=0;j<30;j++){
+			self.canvas.beginPath();
+			self.canvas.arc(20*j+10,20*i+10,10,0,Math.PI*2);
+			arrs[j]={
+				index:i+'-'+j,
+				x:20*j+10,
+				y:20*i+10,
+				data:0,
+				color:"#fff",
+			};
+			self.canvas.fillStyle='#fff';
+			self.canvas.fill();
+			self.canvas.closePath();
+		}
+		self.arr[i]=arrs;
+	}
+	//渲染蛇
+	for(var k=0;k<self.she.length;k++){
+		self.canvas.beginPath();
+		self.canvas.arc(self.arr[self.she[k].x][self.she[k].y].y,self.arr[self.she[k].x][self.she[k].y].x,10,0,Math.PI*2);
+		self.canvas.fillStyle=self.she[k].color;
+		self.canvas.fill();
+		self.canvas.closePath();
+	}
+	// 蛇头图片渲染
+	self.canvas.beginPath();
+	var img=new Image();
+	img.src="she.jpg";
+	self.canvas.drawImage(img,self.she[self.she.length-1].x*20,self.she[self.she.length-1].y*20,20,20);
+	self.canvas.closePath();
+}
+
+
+
+
+var play=new main();
+play.begin();
+
+</script>
